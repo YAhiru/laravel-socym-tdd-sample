@@ -2,21 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\CustomerService;
 use Illuminate\Http\Request;
 
 class ApiController extends Controller
 {
-    public function getCustomers()
+    public function getCustomers(CustomerService $customerService)
     {
-        return response()->json(\App\Customer::query()->select(['id', 'name'])->get());
+        return response()->json($customerService->getCustomers());
     }
 
-    public function postCustomer(Request $request)
+    public function postCustomer(Request $request, CustomerService $customerService)
     {
         $this->validate($request, ['name' => 'required']);
-        $customer = new \App\Customer();
-        $customer->name = $request->json('name');
-        $customer->save();
+        $customerService->addCustomer($request->json('name'));
     }
 
     public function getCustomer()
